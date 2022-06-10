@@ -52,3 +52,6 @@
 
 [init]
   defaultBranch = master
+[user]
+	email = guillaume.juste0408@gmail.com
+	name = guillaume juste
