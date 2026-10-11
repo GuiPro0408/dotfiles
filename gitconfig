@@ -94,5 +94,8 @@
 	helper = 
 	helper = !/usr/bin/gh auth git-credential
 [credential "https://gist.github.com"]
-	helper = 
+	helper =
 	helper = !/usr/bin/gh auth git-credential
+# github.com SSH uses the work key; route personal repos through the personal key alias.
+[url "git@github-guipro0408:GuiPro0408/"]
+	insteadOf = git@github.com:GuiPro0408/
