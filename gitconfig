@@ -99,3 +99,7 @@
 # github.com SSH uses the work key; route personal repos through the personal key alias.
 [url "git@github-guipro0408:GuiPro0408/"]
 	insteadOf = git@github.com:GuiPro0408/
+# Machine-local work identity rules (installed by the private machine-setup repo).
+# Keep last: it must override [user] above for work remotes.
+[include]
+	path = ~/.config/git/work.gitconfig

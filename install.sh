@@ -70,6 +70,8 @@ if [[ `uname` =~ "Darwin" ]]; then
 fi
 
 # Refresh the current terminal with the newly installed configuration
-exec zsh
+# (only when run by hand: an automated caller such as machine-setup's bootstrap
+# has no terminal and must get control back).
+[[ -t 0 && -t 1 ]] && exec zsh
 
 echo "👌 Carry on with git setup!"

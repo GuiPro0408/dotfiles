@@ -171,7 +171,8 @@ function tools() {
 }
 
 # Machine-local / private config (e.g. work-specific helpers), not versioned here.
-for _zsh_local in ~/.config/zsh/*.zsh(N); do source "$_zsh_local"; done
+# ~/.config/shell/*.sh is shared with bash; ~/.config/zsh/*.zsh is zsh-only.
+for _zsh_local in ~/.config/shell/*.sh(N) ~/.config/zsh/*.zsh(N); do source "$_zsh_local"; done
 unset _zsh_local
 
 # Show tools on interactive shell startup (not in scripts or sub-shells)
