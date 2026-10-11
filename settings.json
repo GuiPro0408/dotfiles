@@ -54,18 +54,35 @@
         "**/log/**": true,
         "**/node_modules/**": true,
         "**/tmp/**": true,
-        "**/vendor/**": true
+        "**/vendor/**": true,
+        "**/.next/**": true,
+        "**/.venv/**": true,
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/dist/**": true,
+        "**/__pycache__/**": true,
+        "**/staticfiles/**": true
     },
-    "git.enabled": false,
+    "search.exclude": {
+        "**/.next": true,
+        "**/node_modules": true,
+        "**/dist": true,
+        "**/build": true,
+        "**/coverage": true,
+        "**/__pycache__": true,
+        "**/.venv": true,
+        "**/staticfiles": true,
+        "**/*.map": true,
+        "**/vendor": true,
+        "**/.git": true,
+        "**/package-lock.json": true,
+        "**/yarn.lock": true
+    },
     "notebook.diff.ignoreMetadata": true,
     "notebook.lineNumbers": "on",
     "notebook.markup.fontSize": 13,
     "python.defaultInterpreterPath": "~/.pyenv/shims/python",
-    "python.formatting.provider": "yapf",
     "python.languageServer": "Pylance",
-    "python.linting.enabled": false,
-    "python.linting.flake8Enabled": false,
-    "python.linting.pylintEnabled": false,
     "python.terminal.activateEnvironment": false,
     "ruby.lint": {
         "rubocop": true
@@ -77,5 +94,15 @@
     "workbench.settings.editor": "json",
     "workbench.settings.openDefaultSettings": true,
     "workbench.settings.useSplitJSON": true,
-    "workbench.startupEditor": "newUntitledFile"
+    "workbench.startupEditor": "newUntitledFile",
+    "github.copilot.chat.agent.thinkingTool": true,
+    "github.copilot.chat.codesearch.enabled": true,
+    "gitlens.ai.generateCommitMessage.customInstructions": "Always provide a title and a description in bullet point format",
+    "gitlens.autolinks": [
+
+    ],
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "eslint.run": "onSave",
+    "typescript.tsserver.maxTsServerMemory": 4096,
+    "typescript.preferences.importModuleSpecifier": "relative"
 }

@@ -10,8 +10,25 @@
   remote = yellow
 
 [core]
-  pager = less -FRSX
+  pager = delta
   editor = code --wait
+  fsmonitor = true
+	excludesfile = /home/guillaume/.gitignore_global
+
+[delta]
+  navigate = true
+  side-by-side = true
+  line-numbers = true
+  syntax-theme = Dracula
+
+[interactive]
+  diffFilter = delta --color-only
+
+[diff]
+  colorMoved = default
+
+[merge]
+  conflictstyle = zdiff3
 
 [alias]
   co = checkout
@@ -38,8 +55,16 @@
   # Removes a file from the index
   unstage = reset HEAD --
 
+  # Quick workflow aliases
+  amend = commit --amend --no-edit
+  undo = reset HEAD~1 --mixed
+  wip = !git add -A && git commit -m 'WIP'
+  last = log -1 HEAD --stat
+  stash-all = stash push --include-untracked
+  aliases = !git config --get-regexp ^alias\\\\. | sed -e s/^alias\\\\.// | sort
+
 [help]
-  autocorrect = 1
+  autocorrect = prompt
 
 [push]
 	default = simple
@@ -51,7 +76,23 @@
   rebase = false
 
 [init]
-  defaultBranch = master
+	defaultBranch = main
 [user]
 	email = guillaume.juste0408@gmail.com
 	name = Guillaume Juste
+[rerere]
+	enabled = true
+[maintenance]
+	repo = /home/guillaume/code/GuiPro0408/MedMyDay-Front
+	repo = /home/guillaume/code/GuiPro0408/MedMyDay-Django
+	repo = /home/guillaume/code/GuiPro0408/fiberwave-boatworks
+	repo = /home/guillaume/code/GuiPro0408/maid-to-clean
+	repo = /home/guillaume/code/GuiPro0408/auto_analyst
+	repo = /home/guillaume/code/GuiPro0408/Backend-medecin
+	repo = /home/guillaume/code/GuiPro0408/portfolio-2025
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential

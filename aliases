@@ -1,9 +1,95 @@
 # Get External IP / Internet Speed
 alias myip="curl https://ipinfo.io/json" # or /ip for plain-text ip
-alias speedtest="curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -"
+alias speedtest="speedtest-cli" # install: pip install speedtest-cli
 
 # Quickly serve the current directory as HTTP
-alias serve='ruby -run -e httpd . -p 8000' # Or python -m SimpleHTTPServer :)
+alias serve='python3 -m http.server 8000'
 
-# NOTE: On Q3 2021, Le Wagon decided to change the Web Dev curriculum default text editor
-alias stt="echo 'Launching VS Code instead of Sublime Text... (cf ~/.aliases)' && code ."
+code() {
+	local vscode_remote_cli
+	vscode_remote_cli="$(command ls -t "$HOME"/.vscode-server/bin/*/bin/remote-cli/code 2>/dev/null | head -n 1)"
+
+	if [[ -n "${VSCODE_IPC_HOOK_CLI:-}" && -n "$vscode_remote_cli" && -x "$vscode_remote_cli" ]]; then
+		"$vscode_remote_cli" "$@"
+		return $?
+	fi
+
+	if command ls /proc/sys/fs/binfmt_misc/WSLInterop* >/dev/null 2>&1; then
+		"/mnt/c/Users/guill/AppData/Local/Programs/Microsoft VS Code/bin/code" "$@"
+		return $?
+	fi
+
+	print -u2 "Windows interop is not active in this WSL session. From Windows PowerShell, run: wsl --shutdown"
+	print -u2 "Then reopen Ubuntu and retry: code $*"
+	return 126
+}
+
+# Commonly used commands
+mkcd() {
+	if [[ -z "${1-}" ]]; then
+		print -u2 "Usage: mkcd <dir>"
+		return 1
+	fi
+	mkdir -p -- "$1" && cd -- "$1"
+}
+# Claude Desktop (WSLg) — les 2 flags sont obligatoires et l'override du fichier
+# .desktop ne s'applique PAS à une commande tapée au terminal.
+#   --password-store=gnome-libsecret : sans lui les XDG vars sont vides sous WSLg,
+#     Electron retombe sur le backend basic_text et le sign-in ne survit pas à un
+#     `wsl --shutdown`.
+#   --ignore-gpu-blocklist : Chromium blocklist le gallium d3d12 de Mesa, ce qui
+#     casse les previews WebGL sans le moindre message.
+_cdesk_main_pid() {
+	# Le process principal est le seul sans --type= (les autres sont zygote/gpu/renderer).
+	local p cmd
+	for p in ${(f)"$(pgrep -x claude-desktop 2>/dev/null)"}; do
+		cmd="$(tr '\0' ' ' < /proc/$p/cmdline 2>/dev/null)"
+		[[ "$cmd" == *--type=* ]] && continue
+		print -- "$p"
+		return 0
+	done
+	return 1
+}
+
+cdesk() {
+	local pid
+	if pid="$(_cdesk_main_pid)"; then
+		print -u2 "Claude Desktop tourne déjà (pid $pid) — Electron verrouille l'instance unique."
+		print -u2 "Pour une nouvelle session Code : cdesk-code"
+		return 1
+	fi
+	# setsid : sans lui, fermer le terminal tue l'app.
+	env XDG_CURRENT_DESKTOP=GNOME XDG_SESSION_TYPE=wayland \
+		setsid claude-desktop \
+		--password-store=gnome-libsecret --ignore-gpu-blocklist \
+		>/dev/null 2>&1 &
+	print "Claude Desktop lancé."
+}
+
+cdesk-code() {
+	env XDG_CURRENT_DESKTOP=GNOME XDG_SESSION_TYPE=wayland \
+		setsid claude-desktop \
+		--password-store=gnome-libsecret --ignore-gpu-blocklist \
+		"claude://code/new?source=desktop_action" \
+		>/dev/null 2>&1 &
+	print "Nouvelle session Claude Code demandée."
+}
+
+cdesk-stop() {
+	local pid i
+	if ! pid="$(_cdesk_main_pid)"; then
+		print "Claude Desktop ne tourne pas."
+		return 0
+	fi
+	# SIGTERM : Electron enregistre window-state.json et vide ses tampons.
+	# Un SIGKILL laisserait une géométrie périmée, qui empêche la fenêtre de
+	# se mapper au démarrage suivant.
+	print "Arrêt de Claude Desktop (pid $pid)..."
+	kill -TERM "$pid" 2>/dev/null || { print -u2 "kill a échoué"; return 1; }
+	for i in {1..20}; do
+		sleep 0.5
+		_cdesk_main_pid >/dev/null || { print "Arrêté proprement."; return 0; }
+	done
+	print -u2 "Toujours vivant après 10 s. Forcer : kill -9 $pid"
+	return 1
+}
