@@ -19,7 +19,7 @@ unalias lt # we need `lt` for https://github.com/localtunnel/localtunnel
 # ──────────────────────────────────────────────────────────────
 typeset -U path PATH  # auto-deduplicate PATH entries
 
-export PATH="${HOME}/.cargo/bin:${HOME}/php83/usr/bin:${HOME}/.rbenv/bin:${PATH}:/usr/local/sbin"
+export PATH="${HOME}/.cargo/bin:${HOME}/.rbenv/bin:${PATH}:/usr/local/sbin"
 
 # Windows paths (only the ones actually needed — appendWindowsPath=false in wsl.conf)
 # VS Code remote CLI, Chrome (for $BROWSER), Docker CLI
@@ -151,12 +151,10 @@ export GH_BROWSER="$BROWSER"
 # direnv
 eval "$(direnv hook zsh)"
 
-# alias php="php8.3"  — RETIRE le 2026-09-09.
-# Il court-circuitait ~/.local/bin/php, si bien que le PHP interactif et celui de
-# make / des hooks n'avaient ni les memes extensions ni le meme short_open_tag :
-# 34 extensions contre 52, et un test de projet ignore en silence d'un cote mais pas
-# de l'autre. L'enrobage fixe deja la version a 8.3 ; le laisser seul en charge
-# donne UN PHP derriere UN nom. Pour revenir en arriere, decommenter.
+# PHP : un seul, /usr/bin/php -> php8.3 (apt, PPA ondrej) via update-alternatives.
+# Ni alias ni wrapper : interactif, make, hooks et Composer voient le meme binaire,
+# les memes extensions et le meme short_open_tag (On, via
+# /etc/php/8.3/cli/conf.d/99-local.ini).
 
 # Source uv/rye env if present
 [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
