@@ -1,4 +1,2 @@
-# Setup the PATH for pyenv binaries and shims
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-type -a pyenv > /dev/null && eval "$(pyenv init --path)"
+# Login-shell setup. mise shims are put on PATH by ~/.zshenv (every zsh shell)
+# and `mise activate` runs from ~/.zshrc, so nothing is needed here for now.

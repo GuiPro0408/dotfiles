@@ -81,7 +81,7 @@
     "notebook.diff.ignoreMetadata": true,
     "notebook.lineNumbers": "on",
     "notebook.markup.fontSize": 13,
-    "python.defaultInterpreterPath": "~/.pyenv/shims/python",
+    "python.defaultInterpreterPath": "~/.local/share/mise/shims/python",
     "python.languageServer": "Pylance",
     "python.terminal.activateEnvironment": false,
     "ruby.lint": {
