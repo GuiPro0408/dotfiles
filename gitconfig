@@ -12,7 +12,6 @@
 [core]
   pager = delta
   editor = code --wait
-  fsmonitor = true
 	excludesfile = /home/guillaume/.gitignore_global
 
 [delta]
@@ -40,8 +39,11 @@
   dt  = difftool
   stat = !git --no-pager diff --stat
 
-  # Clean merged branches
-  sweep = !git branch --merged master | grep -v 'master$' | xargs git branch -d && git remote prune origin
+  # Default branch: origin/HEAD, else local main, else master
+  default-branch = "!b=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null) && echo ${b#origin/} || { git show-ref -q --verify refs/heads/main && echo main || echo master; }"
+
+  # Clean branches merged into the default branch
+  sweep = "!b=$(git default-branch) && git branch --merged $b | grep -vE '^[*+]|^ *'$b'$' | xargs -r git branch -d && git remote prune origin"
 
   # http://www.jukie.net/bart/blog/pimping-out-git-log
   lg = log --graph --all --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)%an%Creset %C(yellow)%d%Creset'
@@ -50,7 +52,7 @@
   # Then other can access via `git clone git://#{YOUR_IP_ADDRESS}/
   serve = !git daemon --reuseaddr --verbose  --base-path=. --export-all ./.git
 
-  m = checkout master
+  m = "!git checkout $(git default-branch)"
 
   # Removes a file from the index
   unstage = reset HEAD --
@@ -83,13 +85,7 @@
 [rerere]
 	enabled = true
 [maintenance]
-	repo = /home/guillaume/code/GuiPro0408/MedMyDay-Front
-	repo = /home/guillaume/code/GuiPro0408/MedMyDay-Django
 	repo = /home/guillaume/code/GuiPro0408/fiberwave-boatworks
-	repo = /home/guillaume/code/GuiPro0408/maid-to-clean
-	repo = /home/guillaume/code/GuiPro0408/auto_analyst
-	repo = /home/guillaume/code/GuiPro0408/Backend-medecin
-	repo = /home/guillaume/code/GuiPro0408/portfolio-2025
 [credential "https://github.com"]
 	helper = 
 	helper = !/usr/bin/gh auth git-credential
