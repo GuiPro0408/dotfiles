@@ -19,7 +19,10 @@ unalias lt # we need `lt` for https://github.com/localtunnel/localtunnel
 # ──────────────────────────────────────────────────────────────
 typeset -U path PATH  # auto-deduplicate PATH entries
 
-export PATH="${HOME}/.cargo/bin:${PATH}:/usr/local/sbin"
+# bun (installer used to append this at the end of the file)
+export BUN_INSTALL="$HOME/.bun"
+export PATH="${BUN_INSTALL}/bin:${PATH}:/usr/local/sbin"
+[[ -s "$BUN_INSTALL/_bun" ]] && source "$BUN_INSTALL/_bun"
 
 # Windows paths (only the ones actually needed — appendWindowsPath=false in wsl.conf)
 # VS Code remote CLI, Chrome (for $BROWSER), Docker CLI
@@ -180,10 +183,3 @@ if [[ -o interactive && -z "$TOOLS_SHOWN" ]]; then
   export TOOLS_SHOWN=1
   tools
 fi
-
-# bun completions
-[ -s "/home/guillaume/.bun/_bun" ] && source "/home/guillaume/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
